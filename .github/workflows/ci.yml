@@ -1,0 +1,21 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Unit and regression tests
+        run: make test
+      - name: UndefinedBehaviorSanitizer
+        run: make sanitize
+      - name: ThreadSanitizer
+        run: make tsan
+      - name: Build LD_PRELOAD library
+        run: make preload
+      - name: Real programs
+        run: ./scripts/real_world.sh
+      - name: Benchmarks
+        run: make bench
